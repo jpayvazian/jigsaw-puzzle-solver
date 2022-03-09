@@ -1,18 +1,16 @@
-import shutil
 import sift
-import cv2
 import cv2 as cv
 import numpy as np
-import statistics
 import utils
-from matplotlib import pyplot as plt
 import segmentation
+
 # Constants
 MIN_MATCH_COUNT = 4
 MIN_DISTANCE_THRESHOLD = 0.75
 RANSAC_REPROJ_THRESHOLD = 5.0
 
 def make_grid(img_puzzle, puzzle_size):
+    # Hardcoded puzzle sizes for testing
     puzzle_dimensions = {24:[4, 6], 60:[6,10], 96:[8,12]}
     nrows, ncols = puzzle_dimensions[puzzle_size]
 
@@ -29,7 +27,7 @@ def make_grid(img_puzzle, puzzle_size):
     # Get contours from edges
     contour = sift.get_max_contour(puzzle_edges)
 
-    x, y, puzzwidth, puzzheight = cv2.boundingRect(contour)
+    x, y, puzzwidth, puzzheight = cv.boundingRect(contour)
 
     gridpixels = []
 
@@ -40,20 +38,12 @@ def make_grid(img_puzzle, puzzle_size):
             utils.save_grid(i*ncols+j, int((((j * puzzwidth / ncols)+x) + ((j * puzzwidth / ncols + puzzwidth / ncols)+x)) / 2), int((((i * puzzheight / nrows)+y) + ((i * puzzheight / nrows + puzzheight / nrows)+y)) / 2), (int)(j * puzzwidth / ncols)+x, (int)(j * puzzwidth / ncols + puzzwidth / ncols)+x, (int)(i * puzzheight / nrows)+y, (int)(i * puzzheight / nrows + puzzheight / nrows)+y)
             gridpixels.append(((int)(j * puzzwidth / ncols)+x, (int)(j * puzzwidth / ncols + puzzwidth / ncols)+x, (int)(i * puzzheight / nrows)+y, (int)(i * puzzheight / nrows + puzzheight / nrows)+y))
 
-    #for i in range(12):
-    #    cv.drawMarker(img_puzzle, (int(utils.find_grid(i)[0]), int(utils.find_grid(i)[1])), color=(255, 0, 0), markerType=cv.MARKER_CROSS, markerSize= 20, thickness=4)
-
-
-
-    #cv.imwrite("Puzzle Examples/GRID.jpg", img_puzzle)
+    cv.imwrite("Puzzle Examples/GRID.jpg", img_puzzle)
     return gridpixels
 
 def color_demo(img_puzzle, bgr_range, kernel_size, gridlims, gridmatched, piecematched):
     utils.make_dir("Color Matches")
     puzzle_size = utils.dir_size("Pieces")
-    #imgpath = img_puzzle
-    #img_puzzle = cv.imread(img_puzzle, cv.IMREAD_COLOR)
-
     kernel = np.ones((kernel_size, kernel_size), np.uint8)
 
     #storage for histograms
@@ -86,32 +76,16 @@ def color_demo(img_puzzle, bgr_range, kernel_size, gridlims, gridmatched, piecem
     # Reading in piece images as a loop
     for i in range(puzzle_size):
         if(not piecematched[i]):
-            img_puzzle_copy = img_puzzle.copy()
             img_piece_original = cv.imread("Pieces/Piece_{}.png".format(i), cv.IMREAD_COLOR)
 
             # get background color, add padding
             b,g,r = sift.get_background_color(img_piece_original)
             img_piece = cv.copyMakeBorder(img_piece_original, 50, 50, 50, 50, cv.BORDER_CONSTANT, value=(b, g, r))
 
-            # Mask piece based on background color and fill in
-            piece_filled = sift.mask_and_fill(img_piece.copy(), b, g, r, kernel, bgr_range)
-
-            # Perform Edge Detection on Solid Image
-            piece_edges = sift.canny_edge_detection(piece_filled)
-
-            # Dilate image to connect edges
-            piece_edges = cv.dilate(piece_edges, np.ones((3, 3), np.uint8), iterations=1)
-
-            # Get max contour
-            piece_contour = sift.get_max_contour(piece_edges)
-
-            # TODO Getting color histogram of piece
             piece_planes = cv.split(img_piece)
             b_hist = cv.calcHist(piece_planes, [0], None, [256], [0, 255], accumulate=False)
             g_hist = cv.calcHist(piece_planes, [1], None, [256], [0, 255], accumulate=False)
             r_hist = cv.calcHist(piece_planes, [2], None, [256], [0, 255], accumulate=False)
-            #hist = (cv.calcHist([img_piece], [0, 1, 2],
-            #                    None, [8, 8, 8], [0, 255, 0, 255, 0, 255]))
 
             # normalize and append the histogram
             cv.normalize(b_hist, b_hist, alpha=0, beta=1, norm_type=cv.NORM_MINMAX)
@@ -124,7 +98,6 @@ def color_demo(img_puzzle, bgr_range, kernel_size, gridlims, gridmatched, piecem
             comps = []
             for p in range(puzzle_size):
                 if (not gridmatched[p]):
-                    #print("Piece {} with Grid {} compares with: {}".format(i, p, cv.compareHist(puzzle_hist[p], piece_hist[i], cv.HISTCMP_CORREL)))
                     fullcomp = cv.compareHist(puzzle_hist_r[p], piece_hist_r[i], cv.HISTCMP_CORREL) + \
                                cv.compareHist(puzzle_hist_g[p], piece_hist_g[i], cv.HISTCMP_CORREL) + \
                                cv.compareHist(puzzle_hist_b[p], piece_hist_b[i], cv.HISTCMP_CORREL)
@@ -138,12 +111,4 @@ def color_demo(img_puzzle, bgr_range, kernel_size, gridlims, gridmatched, piecem
             piece_hist_g.append(0)
             piece_hist_r.append(0)
 
-            #print(comps)
-            #comps.insert(np.argmax(comps), -100)
-            #comps.remove(np.max(comps))
-            #print("Piece {} and Grid {} are the second best match.".format(i, np.argmax(comps)))
     return 0
-
-#segmentation.segment_pieces("Puzzle Examples/12pieces.jpg", 12, 40, 20)
-
-#color_demo("Puzzle Examples/12puzzle.jpg", 40, 20, 1, 1)
