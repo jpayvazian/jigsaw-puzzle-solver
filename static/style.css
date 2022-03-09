@@ -1,0 +1,72 @@
+h1 {
+    /* background-color: #AC2B37; */
+    text-align: center;
+    color: #ffffff;
+    border: 10px;
+    font-size: 400%;
+    display: inline-block;
+}
+
+h4{
+    padding: 10px;
+}
+
+body{
+    text-align: center;
+}
+
+.title{
+    width: 100%;
+    padding:10px 0;
+    text-align: center;
+    background: #AC2B37;
+    color: white;
+}
+
+form{
+    padding: 12px;
+    width: fit-content;
+    box-sizing: border-box;
+    background-color: #A9B2B7;
+    font-size: 120%;
+    color: #000000;
+    margin: 0 auto; 
+    width: 65%;
+}
+
+input[type=file]::file-selector-button {
+    border: 2px solid #AC2B37;
+    padding: .2em .4em;
+    border-radius: .2em;
+    background-color: #AC2B37;
+    transition: 1s;
+    color: #ffffff;
+  }
+  
+input[type=file]::file-selector-button:hover {
+    background-color: #ffffff;
+    border: 2px solid #AC2B37;
+    color: #000000;
+}
+
+.mask-img {
+    margin: 10px;
+    min-width:65%;
+    height:auto;
+}
+
+.carousel {
+    border: 10px solid #A9B2B7;
+     margin-bottom: 15px;
+}
+
+.puzzleimg{
+    max-width: 7%;
+    display: inline-block;
+}
+
+.flexBoxOne {
+    display: flex;
+    align-items: center;
+    justify-content: space-evenly;
+}

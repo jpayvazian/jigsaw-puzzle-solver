@@ -1,0 +1,18 @@
+{% extends "base.html" %}
+{% block title %}Jigsaw Puzzle Solver ~ Mask{% endblock %}
+{% block content %}Masking page for Jigsaw Puzzle Solver{% endblock %}
+{% block body %}
+<form action="/mask" method="POST">
+    <label for="bgr">Background color threshold</label><br/>
+    <input type="range" min="10" max="70" value="{{bgr_initial}}" step="5" class="slider" name="SliderBGR" id="bgr" oninput="bgrVal.value = this.value">
+    <output id="bgrVal">{{bgr_initial}}</output>
+    <br/>
+    <label for="kernel">Morphology kernel size</label><br/>
+    <input type="range" min="1" max="30" value="{{kernel_initial}}" step="1" class="slider" name="SliderKernel" id="kernel" oninput="kernelVal.value = this.value">
+    <output id="kernelVal">{{kernel_initial}}</output>
+    <br/>
+    <input type="submit" value="Check Mask">
+    <input type="submit" value="Submit" formaction="/sift">
+</form>
+<img class="mask-img" src="../Puzzle Mask/Mask.jpg" alt="Puzzle mask" width="500" height=auto>
+{% endblock %}

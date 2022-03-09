@@ -1,0 +1,30 @@
+{% extends "base.html" %}
+{% block title %}Jigsaw Puzzle Solver ~ SIFT{% endblock %}
+{% block content %}SIFT results page for Jigsaw Puzzle Solver{% endblock %}
+{% block body %}
+<div class="container">
+  <h2>SIFT Matches</h2>
+    <h4 style="color:green">{{matches}} out of {{size}} Matches found!</h4>
+  <div id="myCarousel" class="carousel" data-bs-interval="false">
+    <div class="carousel-inner">
+        <div class="carousel-item active">
+            <img src="../SIFT Sorted/PieceNum0.jpg" alt="SIFT Match 0" class="d-block w-100 h-auto">
+        </div>
+        {% for i in range(1, size) %}
+            <div class="carousel-item">
+                <img src="../SIFT Sorted/PieceNum{{i}}.jpg" alt="SIFT Match {{i}}" class="d-block w-100 h-auto">
+            </div>
+        {% endfor %}
+    </div>
+
+    <button class="carousel-control-prev" type="button" data-bs-target="#myCarousel" data-bs-slide="prev">
+        <span class="carousel-control-prev-icon bg-dark" aria-hidden="true"></span>
+        <span class="visually-hidden">Previous</span>
+    </button>
+    <button class="carousel-control-next" type="button" data-bs-target="#myCarousel" data-bs-slide="next">
+        <span class="carousel-control-next-icon bg-dark" aria-hidden="true"></span>
+        <span class="visually-hidden">Next</span>
+    </button>
+  </div>
+</div>
+{% endblock %}

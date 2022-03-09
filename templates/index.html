@@ -1,0 +1,17 @@
+{% extends "base.html" %}
+{% block title %}Jigsaw Puzzle Solver ~ Home{% endblock %}
+{% block content %}File upload page for Jigsaw Puzzle Solver{% endblock %}
+{% block body %}
+    <form action="/submit" method="POST" enctype="multipart/form-data">
+        <label for="puzzle">Upload an image of the full puzzle solution</label><br />
+        <input type="file" id="puzzle" name="Puzzle" accept="image/jpeg, image.jpg, image/png">
+        <br /><br/>
+        <label for="pieces">Upload an image of all the puzzle pieces scattered</label><br/>
+        <input type="file" id="pieces" name="Pieces" accept="image/jpeg, image.jpg, image/png">
+        <br /><br/>
+        <label for="num">Number of pieces in the puzzle</label><br/>
+        <input type="number" id="num" name="NumPieces" min="1" step="1" required>
+        <br /><br/>
+        <input type="submit">
+    </form>
+{% endblock %}
